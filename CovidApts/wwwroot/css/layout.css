@@ -1,0 +1,39 @@
+﻿.intro-text {
+    color: white;
+    animation: slide-down 1s ease-out;
+}
+
+.skills {
+    background-color: rgba(0,0,0,.2);
+    padding: 5px;
+}
+
+.name {
+    text-shadow: 0 0 10px black;
+    transition: .2s ease-out;
+}
+
+.name:hover {
+    transform: skew(20deg)
+}
+
+@keyframes slide-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    80% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.navbar {
+    background-color: #03A9F4 !important;
+    border: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,.5);
+}
