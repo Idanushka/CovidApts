@@ -1,0 +1,158 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CovidApts</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/main.css" />
+        <link rel="stylesheet" href="~/css/Navbar-Dropdown.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="~/css/layout.css" />
+        <style type="text/css">
+            
+        </style>
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+</head>
+<body>
+
+    <div id="dialog" title="Welcome!" class="dialog-message">
+        <p>This site created by Idan Aharoni, Omri Siniver and Yuval Sages. Please register first!</p>
+    </div>
+
+    <nav id="nav" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a asp-area="" asp-controller="Apartments" asp-action="Index" class="navbar-brand" style="color:white">CovidApts</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <div class="myDropdown_navbar">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Users" asp-action="Index" style="color: white">Users</a></li>
+                        <li><a asp-area="" asp-controller="Companies" asp-action="Index" style="color:white">Companies</a></li>
+                        <li><a asp-area="" asp-controller="Statistics" asp-action="Index" style="color:white">Statistics</a></li>
+                        @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                        {
+                            <li><a asp-area="" asp-controller="Companies" asp-action="ShowMalfExtraDetails" style="color:white">Manager</a></li>
+                        }
+                        <li><a asp-area="" asp-controller="Apartments" asp-action="About" style="color:white">About</a></li>
+                        <li><a asp-area="" asp-controller="Apartments" asp-action="Contact" style="color:white">Contact</a></li>
+                        <li>
+                            <a id="help" style="color:white">?</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-text">
+                        <span class="name">Covid Apts</span>
+                        <span class="skills">Your platform to find and host your apartment as shared workspace</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer style="width:100%">
+
+            <aside style="width:40%">
+                <p>
+                    <iframe scrolling="no" frameborder="0" clocktype="html5" style="overflow:hidden;border:0;margin:0;padding:0;width:450px;height:165px;" src="https://www.clocklink.com/html5embed.php?clock=044&timezone=IST&color=white&size=450&Title=&Message=&Target=&From=2018,1,1,0,0,0&Color=white"></iframe>
+                </p>
+            </aside>
+
+            <div style="width:60%">
+                <p>
+                    <div class="fb-share-button"
+                         data-href="https://www.facebook.com/CovidApts"
+                         data-layout="button_count">
+                    </div>
+                </p>
+                <p>&copy; 2020 - CovidApts</p>
+            </div>
+        </footer>
+    </div>
+
+
+    <environment include="Development">
+        <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBIasAC7os8r0Mf0wZnCmj6UTqG51oJX8&callback=initMap">
+        </script>
+
+    </environment>
+    <environment exclude="Development">
+        <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKp42W_7Sc_kcVimZm-pPKG2TCXeFdzto&callback=initMap">
+        </script>
+    </environment>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(
+            $(function () {
+                $("#dialog").dialog({
+                    autoOpen: false,
+                    show: {
+                        effect: "blind",
+                        duration: 1000
+                    }   
+                });
+
+                $("#help").click(function () {
+                    $("#dialog").dialog("open");
+                });
+            }));
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
