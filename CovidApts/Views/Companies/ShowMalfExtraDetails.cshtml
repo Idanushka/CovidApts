@@ -1,0 +1,86 @@
+﻿@model IEnumerable<CovidApts.ViewModels.ExtraDetailsCompaniesVM>
+
+@{
+    ViewData["Title"] = "Manager Screen";
+}
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/css/main.css" />
+}
+
+<h2>Manager Screen</h2>
+<br />
+
+<form asp-controller="Companies" asp-action="ShowMalfExtraDetails" method="get">
+    <div class="search" style="display:flex; width:100%">
+        <p>Date: <input name="createDate" type="datetime-local" class="search-query" style="padding-right:4%;margin-right:4%" /></p>
+      @Html.DropDownList("Status", new List<SelectListItem> { new SelectListItem { Value ="Open" , Text ="Open" },
+                            new SelectListItem { Value = "Closed" , Text ="Closed" },
+                            new SelectListItem { Value = "InProgress" , Text ="In Progress" }}, "Please choose status")
+        <input name="address" type="text" class="search-query" placeholder="Search Address" style="margin-left:3%;padding-left:4%" />
+        <input name="userName" type="text" class="search-query" placeholder="Search Name" style="margin-left:3%; margin-right:4%" />
+        <button id="searchButton" class="search-button" type="submit">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+</form>
+
+
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ModifiedDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AppartmentAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModifiedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppartmentAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
