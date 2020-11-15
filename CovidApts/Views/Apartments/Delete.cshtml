@@ -1,0 +1,79 @@
+﻿@model CovidApts.Models.Apartment
+
+@{
+    ViewData["Title"] = "Delete";
+}
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/css/main.css" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(
+            $(function () {
+                $("#dialog-delete").dialog({
+                    autoOpen: false,
+                    show: {
+                        effect: "blind",
+                        duration: 1000
+                    },
+                    hide: {
+                        effect: "explode",
+                        duration: 1000
+                    },
+                    buttons: {
+                        "Yes": function () {
+                            $('#delete-form').submit();
+                        },
+                        No: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+                $('[data-confirm]').click(function (e) {
+                    $("#dialog-delete").dialog("open");
+                });
+            }));
+    </script>
+}
+<div style="float:right">
+    <a class="btn btn-default" asp-action="Index">
+        <i class="fa fa-arrow-left"></i> Back
+    </a>
+</div>
+<h2>Delete Apartment</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomsNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RoomsNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Photo)
+        </dt>
+        <dd>
+            <img class="img-large" src="@Url.Content(Model.Photo)" alt="" style="width:400px;height:200px;"/>
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="delete-form">
+        <input type="hidden" asp-for="ApartmentId" />
+        <Button type="button" class="btn btn-danger" data-confirm="Are you sure?" value="Yes">
+            <i class="fa fa-trash-o fa-lg"></i> Delete
+        </Button>
+    </form>
+    <div id="dialog-delete" title="Delete" class="dialog-message">
+        <p>Are you sure?</p>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+﻿@model CovidApts.Models.Apartment
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/css/main.css" />
+}
+
+<div style="float:right">
+    <a class="btn btn-default" asp-action="Index">
+        <i class="fa fa-arrow-left"></i> Back
+    </a> |
+    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.ApartmentId">
+        <i class="fa fa-edit"></i> Edit
+    </a> |
+    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.ApartmentId">
+        <i class="fa fa-trash-o fa-lg"></i> Delete
+    </a>
+</div>
+<h2>Apartment Details</h2>
+
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RoomsNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.RoomsNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Photo)
+        </dt>
+        <dd>
+            <img class="img-large" src="@Url.Content(Model.Photo)" alt="" style="width:400px;height:200px;"/>
+        </dd>
+    </dl>
+</div>
+
+
+<div>
+    <h3>Apartment's location</h3>
+    <div style="width:100%">
+        <aside style="width:30%; padding-left:2%">
+            <h4>Weather Info for address</h4>
+            <ul id="weather">
+
+            </ul>
+        </aside>
+        <div id="map" style="position:relative;width:67%;height:500px;padding-right:3%">></div>
+    </div>
+</div>
+
+<input type="hidden" value="@Model.Latitude" id="Latitude" />
+<input type="hidden" value="@Model.Longitude" id="Longitude" />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Status
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Content
+            </th>
+            <th>
+                Resources
+            </th>
+            <th>
+                CreationDate
+            </th>
+            <th>
+                ModifiedDate
+            </th>
+            <th>
+                CurrentApartment
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Companies)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                </td>
+                <td>
+                    <img class="img-large" src="@Url.Content(item.Resources)" alt="" style="width:200px;height:200px;"/>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ModifiedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrentApartment.Address)
+                </td>
+                <td>
+                    <br>
+                    <a class="btn btn-primary" asp-controller="Companies" asp-action="Edit" asp-route-id="@item.CompanyId">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <br>
+                    <br>
+                    <a class="btn btn-primary" asp-controller="Companies" asp-action="Details" asp-route-id="@item.CompanyId">
+                        <i class="fa fa-info"></i>
+                    </a>
+                    <br>
+                    <br>
+                    <a class="btn btn-danger" asp-controller="Companies" asp-action="Delete" asp-route-id="@item.CompanyId">
+                        <i class="fa fa-trash-o fa-lg"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

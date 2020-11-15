@@ -1,0 +1,271 @@
+﻿
+@{
+    ViewData["Title"] = "Statistics";
+}
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/css/main.css" />
+    <link rel="stylesheet" href="~/css/search.css" />
+}
+<h2>Statistics</h2>
+
+<div class="stat-chart">
+    <h3>Companies status</h3><br />
+    <p>The following chart represents the number of Companies according to their status</p>
+    <div id="tooltip"></div>
+    <div class="pie"></div>
+    <br />
+</div>
+
+<div class="stat-chart">
+    <h3>Companies by month</h3><br />
+    <p>The following chart shows the number of Companies per month for the following address</p>
+    <div class="search">
+        <input id="Address" type="text" class="search-query" placeholder="Search Address" />
+        <button onclick="createBarChart()" class="search-button">
+            <i class="fa fa-search"></i>
+        </button>
+    </div>
+
+    <div id="bar"></div>
+</div>
+
+<h3>Should i get more stuff ?</h3>
+<div class="search" style="display:flex; width:100%">
+    <input id="apartmentAddress" type="text" class="search-query" placeholder="Search Address" style="width:40%" />
+    <input id="month" type="text" class="search-query" placeholder="Search month" style="width:40%;margin-left:3%; margin-right:4%" />
+    <button id="searchButton" class="search-button" onclick="classifyExtraStuff()">
+        <i class="fa fa-search"></i>
+    </button>
+</div>
+<br>
+<br>
+<br>
+<p id="classification"></p>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+
+<script>
+
+    // draw a pie
+    function drawPie(jsonData) {
+
+        // height and width of the svg
+        var h = 400;
+        var w = 400;
+
+        // inner and outer radius of the pie
+        var innerRadius = w / 4;
+        var outerRadius = w / 2;
+
+        // generate pie as function to be called and handel data
+        var pie = d3.pie().value(function(d) {
+            return d.count;
+        });
+
+        // create the color schim, d3 does that for us, generates 10 scale ordnal
+        var color = d3.schemeCategory10;
+
+        // will be used to generate the path attribute
+        var arc = d3.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+
+        // create the svg canvas
+        var svg = d3.select(".pie")
+            .append("svg")
+            .attr('width', w)
+            .attr('height', h);
+
+        // set up groups of arcs
+        var arcs = svg.selectAll("g.arc")
+            .data(pie(jsonData))
+            .enter()
+            .append("g")
+            .attr("class", "arc")
+            .attr("transform", "translate(" + outerRadius + ', ' + outerRadius + ")")
+            .on("mouseover",
+                function(d) {
+                    d3.select('#tooltip')
+                        .style("visibility", "visible")
+                        .text("Status: " + d.data.status);
+                })
+            .on("mousemove",
+                function() {
+                    d3.select('#tooltip')
+                        .style("top", (event.pageY - 10) + "px")
+                        .style("left", (event.pageX + 10) + "px");
+                })
+            .on("mouseout",
+                function() {
+                    d3.select('#tooltip')
+                        .style("visibility", "hidden");
+                });
+
+        // add path to groups
+        arcs.append('path')
+            .attr('fill',
+                function(d, i) {
+                    return color[i];
+                })
+            .attr('d', arc);
+
+        // append text
+        arcs.append('text')
+            .attr("transform",
+                function(d) {
+                    return "translate(" + arc.centroid(d) + ")"; // get the center point of the shape
+                })
+            .attr("text-anchor", "middle")
+            .text(function(d) {
+                return d.value;
+            });
+
+    }
+
+    function drawBar(jsonData) {
+        var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        // set the ranges
+        var x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .range([height, 0]);
+
+        // get some color in
+        var color = d3.schemeCategory20;
+
+        // append the svg object to the body of the page
+        // append a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
+        var svg = d3.selectAll("#bar").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+        // Scale the range of the data in the domains
+        x.domain(jsonData.map(function(d) { return d.month; }));
+        y.domain([0, d3.max(jsonData, function (d) { return d.count; })]);
+
+        // append the rectangles for the bar chart
+        var bars = svg.selectAll("#bar")
+            .data(jsonData)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.month); })
+            .attr("width", x.bandwidth())
+            .attr("y", function(d) { return y(d.count); })
+            .attr("height", function(d) { return height - y(d.count); })
+            .attr('fill', function(d, i) { return color[i]; });
+
+        // add the x Axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        // add the y Axis
+        svg.append("g")
+            .call(d3.axisLeft(y))
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", "-35px")
+            .text("Companies");
+    }
+
+    function redrawBar(jsonData) {
+        var margin = { top: 20, right: 20, bottom: 30, left: 40 },
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+
+        // set the ranges
+        var x = d3.scaleBand()
+            .range([0, width])
+            .padding(0.1);
+        var y = d3.scaleLinear()
+            .range([height, 0]);
+
+        // get some color in
+        var color = d3.schemeCategory20;
+
+        // append the svg object to the body of the page
+        // append a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
+        var svg = d3.selectAll("#bar").select("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+        // Scale the range of the data in the domains
+        x.domain(jsonData.map(function (d) { return d.month; }));
+        y.domain([0, d3.max(jsonData, function (d) { return d.count; })]);
+
+        // removing the old graph
+        svg.selectAll("g").remove();
+        svg.selectAll("rect").remove();
+
+        // append the rectangles for the bar chart
+        var bars = svg.selectAll("#bar")
+            .data(jsonData)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function (d) { return x(d.month); })
+            .attr("width", x.bandwidth())
+            .attr("y", function (d) { return y(d.count); })
+            .attr("height", function (d) { return height - y(d.count); })
+            .attr('fill', function (d, i) { return color[i]; });
+
+        // add the x Axis
+        svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x));
+
+        // add the y Axis
+        svg.append("g")
+            .call(d3.axisLeft(y))
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", "-35px")
+            .text("Companies");
+    }
+
+    function createBarChart() {
+        var address = $("#Address").val();
+        var URL = "https://localhost:44379/Statistics/Companies_in_apartment?address=" + address;
+        $.ajax({
+            url: URL,
+            type: 'GET',
+            success: function (res) {
+                var monthCount = JSON.parse(res);
+                redrawBar(monthCount);
+            }
+        });
+    }
+
+    function classifyExtraStuff() {
+        var address = $("#apartmentAddress").val();
+        var month = $("#month").val();
+        var URL = "https://localhost:44379/Statistics/classify_extra_stuff?address=" + address + "&month=" + month;
+        $.ajax({
+            url: URL,
+            type: 'GET',
+            success: function (res) {
+                var jsonData = JSON.parse(res);
+                $("#classification").html(jsonData.message);
+            }
+        });
+
+    }
+
+    var monthCount = JSON.parse('@Html.Raw(ViewBag.Count)');
+    drawBar(monthCount);
+
+    var statusCount = JSON.parse('@Html.Raw(ViewBag.Status)');
+    drawPie(statusCount);
+
+</script>
