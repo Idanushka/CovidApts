@@ -1,0 +1,86 @@
+﻿@model CovidApts.Models.User
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+@section Scripts
+    {
+    <link rel="stylesheet" href="~/css/main.css" />
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        $(document).ready(
+            $(function () {
+                $("#dialog-delete").dialog({
+                    autoOpen: false,
+                    show: {
+                        effect: "blind",
+                        duration: 1000
+                    },
+                    hide: {
+                        effect: "explode",
+                        duration: 1000
+                    },
+                    buttons: {
+                        "Yes": function () {
+                            $('#delete-form').submit();
+                        },
+                        No: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+
+                $('[data-confirm]').click(function (e) {
+                    $("#dialog-delete").dialog("open");
+                });
+            }));
+    </script>
+}
+<div style="float:right">
+    <a class="btn btn-default" asp-action="Index">
+        <i class="fa fa-arrow-left"></i> Back
+    </a>
+</div>
+<h2>Delete User</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FullName)
+        </dt>
+        <dt>
+            @Html.DisplayFor(model => model.FullName)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dt>
+            @Html.DisplayFor(model => model.Address)
+        </dt>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="delete-form">
+        <input type="hidden" asp-for="Id" />
+        <Button type="button" class="btn btn-danger" data-confirm="Are you sure?" value="Yes">
+            <i class="fa fa-trash-o fa-lg"></i> Delete
+        </Button>
+    </form>
+    <div id="dialog-delete" title="Delete" class="dialog-message">
+        <p>Are you sure?</p>
+    </div>
+</div>
