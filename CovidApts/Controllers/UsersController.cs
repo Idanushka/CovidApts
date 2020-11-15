@@ -34,7 +34,8 @@ namespace CovidApts.Controllers
             return View(await q.ToListAsync());
         }
 
-            public async Task<IActionResult> Index(string Name, string Email, string Address)
+        [Authorize(Roles = "Admin,Janitor,Guide,SocialWorker")]
+        public async Task<IActionResult> Index(string Name, string Email, string Address)
         {
             if (String.IsNullOrEmpty(Name) && String.IsNullOrEmpty(Email) && String.IsNullOrEmpty(Address))
             {
